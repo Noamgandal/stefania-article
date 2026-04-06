@@ -47,7 +47,7 @@ export function ArticleSection({
         return (
           <ScrollReveal key={i}>
             <p
-              className="mb-6 font-serif text-base md:text-lg leading-relaxed text-foreground/90"
+              className="mb-6 font-serif text-base md:text-lg leading-relaxed text-foreground"
               dangerouslySetInnerHTML={{ __html: html }}
             />
           </ScrollReveal>

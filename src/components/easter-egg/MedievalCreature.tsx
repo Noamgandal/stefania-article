@@ -1,41 +1,28 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 export function MedievalCreature() {
-  const sentinelRef = useRef<HTMLDivElement>(null);
   const [triggered, setTriggered] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(true);
-
-  // Check prefers-reduced-motion on mount
+  // Use scroll-based trigger instead of sentinel element
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mq.matches);
-  }, []);
+    if (mq.matches) return;
 
-  // Observe sentinel at ~60% of page
-  useEffect(() => {
-    if (prefersReducedMotion || triggered) return;
+    const handleScroll = () => {
+      if (triggered) return;
+      const scrollPercent =
+        window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (scrollPercent >= 0.6) {
+        setTriggered(true);
+        setVisible(true);
+      }
+    };
 
-    const sentinel = sentinelRef.current;
-    if (!sentinel) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTriggered(true);
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0 }
-    );
-
-    observer.observe(sentinel);
-
-    return () => observer.disconnect();
-  }, [prefersReducedMotion, triggered]);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [triggered]);
 
   // Hide after 4 seconds
   useEffect(() => {
@@ -46,16 +33,8 @@ export function MedievalCreature() {
 
   return (
     <>
-      {/* Sentinel placed at roughly 60% down the page content flow */}
-      <div
-        ref={sentinelRef}
-        aria-hidden="true"
-        className="absolute left-0 w-px h-px"
-        style={{ top: '60%' }}
-      />
-
       {/* The creature */}
-      {triggered && !prefersReducedMotion && (
+      {triggered && (
         <div
           className={`fixed right-0 top-1/2 -translate-y-1/2 z-20 pointer-events-none transition-transform duration-700 ease-out ${
             visible
