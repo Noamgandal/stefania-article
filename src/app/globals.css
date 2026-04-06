@@ -1,26 +1,186 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
+  /* Primary — Burgundy / Wine */
+  --color-primary-50: #fdf2f4;
+  --color-primary-100: #fbe6ea;
+  --color-primary-200: #f5c0ca;
+  --color-primary-300: #ee95a8;
+  --color-primary-400: #e06080;
+  --color-primary-500: #c9365a;
+  --color-primary-600: #8b1e3b;
+  --color-primary-700: #731832;
+  --color-primary-800: #5e152b;
+  --color-primary-900: #4a1224;
+
+  /* Secondary — Terracotta */
+  --color-secondary-50: #fef6f0;
+  --color-secondary-100: #fde9d6;
+  --color-secondary-200: #f9cdaa;
+  --color-secondary-300: #f4ab78;
+  --color-secondary-400: #d98a50;
+  --color-secondary-500: #c46a35;
+  --color-secondary-600: #a8552a;
+  --color-secondary-700: #8a4424;
+  --color-secondary-800: #6e3620;
+  --color-secondary-900: #562b1b;
+
+  /* Accent — Gold / Gilded */
+  --color-accent-50: #fefce8;
+  --color-accent-100: #fef9c3;
+  --color-accent-200: #fef08a;
+  --color-accent-300: #fde047;
+  --color-accent-400: #f0c81c;
+  --color-accent-500: #d4a01c;
+  --color-accent-600: #b88415;
+  --color-accent-700: #926514;
+  --color-accent-800: #775018;
+  --color-accent-900: #5c3e16;
+
+  /* Parchment Neutrals */
+  --color-parchment-50: #fffff8;
+  --color-parchment-100: #fefdf0;
+  --color-parchment-200: #fdf8e0;
+  --color-parchment-300: #f5edcc;
+  --color-parchment-400: #e8ddb3;
+  --color-parchment-500: #d4c99a;
+  --color-parchment-600: #b5a87a;
+  --color-parchment-700: #8f845e;
+  --color-parchment-800: #6b634a;
+  --color-parchment-900: #4a4535;
+
+  /* Semantic colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* Font families */
+  --font-serif: var(--font-source-serif);
+  --font-display: var(--font-playfair);
+
+  /* Animations */
+  --animate-fade-in-up: fade-in-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-title-reveal: title-reveal 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-peek-in: peek-in 4s ease both;
+  --animate-slide-up-player: slide-up-player 0.3s ease-out both;
+  --animate-divider-draw: divider-draw 0.8s ease-out both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #fffff8;
+  --foreground: #111111;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+/* Keyframe Animations */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes title-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+    letter-spacing: 0.05em;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: normal;
+  }
+}
+
+@keyframes peek-in {
+  0% {
+    transform: translateX(100%);
+  }
+  15% {
+    transform: translateX(0);
+  }
+  85% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes slide-up-player {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes divider-draw {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Stagger delays */
+
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Typography base styles */
+
+article {
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+@media (min-width: 768px) {
+  article {
+    font-size: 1.25rem;
+    line-height: 1.75;
+  }
+}
+
+.prose-column {
+  max-width: 42rem;
+  margin-inline: auto;
 }
