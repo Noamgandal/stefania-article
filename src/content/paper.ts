@@ -19,10 +19,12 @@ export interface PaperSection {
 }
 
 export const paperMetadata = {
-  title: 'Weaponizing Obese Sinners in Medieval Hell',
-  subtitle:
-    "Taddeo di Bartolo's Last Judgment in San Gimignano's Collegiata",
-  author: 'Stefania Gandal',
+  title: 'Obesity and the Politics of Taddeo di Bartolo\u2019s Inferno',
+  subtitle: 'Stefania Roccas Gandal',
+  author: 'Stefania Roccas Gandal',
+  journal: 'Renaissance Studies',
+  published: '16 March 2026',
+  doi: '10.1111/rest.70030',
 };
 
 export const sections: PaperSection[] = [

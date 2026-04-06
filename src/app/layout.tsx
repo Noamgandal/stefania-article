@@ -15,11 +15,11 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
-  title: 'Weaponizing Obese Sinners in Medieval Hell',
+  title: "Obesity and the Politics of Taddeo di Bartolo's Inferno",
   description:
-    "Taddeo di Bartolo's depiction of Hell in the Collegiata di Santa Maria Assunta — a visual critique of the Dominican Order in early fifteenth-century San Gimignano.",
+    "Obesity and the Politics of Taddeo di Bartolo's Inferno — a visual critique of the Dominican Order in early fifteenth-century San Gimignano.",
   openGraph: {
-    title: 'Weaponizing Obese Sinners in Medieval Hell',
+    title: "Obesity and the Politics of Taddeo di Bartolo's Inferno",
     description:
       "Taddeo di Bartolo's Last Judgment fresco as political commentary against the Dominican Order.",
     type: 'article',

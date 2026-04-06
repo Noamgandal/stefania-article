@@ -1,9 +1,11 @@
 import { sections, paperMetadata } from '@/content/paper';
+import { figures } from '@/content/figures';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Hero } from '@/components/sections/Hero';
 import { TableOfContents } from '@/components/sections/TableOfContents';
 import { ArticleSection } from '@/components/sections/ArticleSection';
+import { FigureNavigator } from '@/components/sections/FigureNavigator';
 import { AudioInline } from '@/components/audio/AudioInline';
 import { AudioProvider } from '@/components/audio/AudioProvider';
 import { StickyPlayer } from '@/components/audio/StickyPlayer';
@@ -36,22 +38,31 @@ export default function Home() {
 
             {/* Article content */}
             <article className="flex-1 min-w-0">
-              {sections.map((section) => (
-                <div key={section.id} className="mb-16">
-                  <ArticleSection
-                    id={section.id}
-                    number={section.number}
-                    title={section.title}
-                    paragraphs={section.paragraphs}
-                  />
-                </div>
-              ))}
+              {sections.map((section) => {
+                const figureData = section.figures?.map(ref => ({
+                  paragraphIndex: ref.paragraphIndex,
+                  figureData: figures.find(f => f.id === ref.id)!,
+                })).filter(f => f.figureData) || [];
+
+                return (
+                  <div key={section.id} className="mb-16">
+                    <ArticleSection
+                      id={section.id}
+                      number={section.number}
+                      title={section.title}
+                      paragraphs={section.paragraphs}
+                      figures={figureData}
+                    />
+                  </div>
+                );
+              })}
             </article>
           </div>
         </div>
 
         {/* Sentinel for easter egg at ~60% */}
         <MedievalCreature />
+        <FigureNavigator />
       </main>
 
       <Footer />

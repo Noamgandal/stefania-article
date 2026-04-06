@@ -1,11 +1,14 @@
 import { cn } from '@/lib/utils';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
+import { FigureImage } from '@/components/sections/FigureImage';
+import type { Figure } from '@/content/figures';
 
 interface ArticleSectionProps {
   id: string;
   number?: number;
   title: string;
   paragraphs: string[];
+  figures?: { paragraphIndex: number; figureData: Figure }[];
   className?: string;
 }
 
@@ -14,6 +17,7 @@ export function ArticleSection({
   number,
   title,
   paragraphs,
+  figures = [],
   className,
 }: ArticleSectionProps) {
   return (
@@ -32,25 +36,42 @@ export function ArticleSection({
 
       {paragraphs.map((html, i) => {
         const isBlockquote = html.trimStart().startsWith('<blockquote');
-
-        if (isBlockquote) {
-          return (
-            <ScrollReveal key={i}>
-              <div
-                className="my-10 px-8 py-6 border-l-2 border-accent-500/40 text-center italic font-serif text-foreground/70 leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: html }}
-              />
-            </ScrollReveal>
-          );
-        }
+        const figureForParagraph = figures.find(
+          (f) => f.paragraphIndex === i
+        );
 
         return (
-          <ScrollReveal key={i}>
-            <p
-              className="mb-6 font-serif text-base md:text-lg leading-relaxed text-foreground"
-              dangerouslySetInnerHTML={{ __html: html }}
-            />
-          </ScrollReveal>
+          <div key={i}>
+            {isBlockquote ? (
+              <ScrollReveal>
+                <div
+                  className="my-10 px-8 py-6 border-l-2 border-accent-500/40 text-center italic font-serif text-foreground/70 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: html }}
+                />
+              </ScrollReveal>
+            ) : (
+              <ScrollReveal>
+                <p
+                  className="mb-6 font-serif text-base md:text-lg leading-relaxed text-foreground"
+                  dangerouslySetInnerHTML={{ __html: html }}
+                />
+              </ScrollReveal>
+            )}
+
+            {figureForParagraph && (
+              <ScrollReveal>
+                <FigureImage
+                  src={figureForParagraph.figureData.src}
+                  alt={figureForParagraph.figureData.alt}
+                  caption={figureForParagraph.figureData.caption}
+                  figureNumber={
+                    parseInt(figureForParagraph.figureData.id.replace('fig-', ''), 10)
+                  }
+                  layout={figureForParagraph.figureData.layout}
+                />
+              </ScrollReveal>
+            )}
+          </div>
         );
       })}
     </section>

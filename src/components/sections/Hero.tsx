@@ -11,16 +11,15 @@ export function Hero() {
         <div className="mx-auto mb-8 h-px w-24 bg-accent-500/60" />
 
         <h1 className="font-display text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight text-primary-700 animate-title-reveal">
-          Weaponizing Obese Sinners in Medieval Hell
+          Obesity and the Politics of Taddeo di Bartolo&rsquo;s Inferno
         </h1>
 
         <p className="mt-6 font-serif text-xl md:text-2xl text-foreground/70 stagger-1 animate-fade-in-up">
-          Taddeo di Bartolo&rsquo;s Last Judgment in San Gimignano&rsquo;s
-          Collegiata
+          Published in <em>Renaissance Studies</em>
         </p>
 
         <p className="mt-4 font-serif text-lg text-foreground/50 stagger-2 animate-fade-in-up">
-          Stefania Gandal
+          Stefania Roccas Gandal
         </p>
 
         {/* Decorative bottom line */}
