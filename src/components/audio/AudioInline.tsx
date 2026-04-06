@@ -62,21 +62,21 @@ export function AudioInline() {
             onClick={() => toggle(track.id)}
             className={cn(
               'flex items-start gap-3 rounded-xl p-4 text-left shadow-sm transition-all duration-200',
-              'bg-parchment-50 border border-parchment-200 hover:shadow-md hover:border-secondary-300',
-              isActive && 'ring-2 ring-secondary-500 border-secondary-400 bg-parchment-100'
+              'bg-parchment-100 border border-parchment-300 hover:shadow-md hover:border-secondary-300',
+              isActive && 'ring-2 ring-secondary-500 border-secondary-400 bg-parchment-200'
             )}
           >
             <div
               className={cn(
                 'flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center',
-                isActive ? 'bg-secondary-500 text-white' : 'bg-parchment-200 text-secondary-600'
+                isActive ? 'bg-secondary-500 text-white' : 'bg-parchment-300 text-secondary-600'
               )}
             >
               <Icon className="w-5 h-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-parchment-900">{track.title}</p>
-              <p className="text-xs text-parchment-500 mt-0.5">{track.description}</p>
+              <p className="font-semibold text-sm text-foreground">{track.title}</p>
+              <p className="text-xs text-foreground/60 mt-0.5">{track.description}</p>
               {saved > 0 && !isActive && (
                 <span className="inline-block mt-1.5 text-xs bg-accent-100 text-accent-700 rounded-full px-2 py-0.5">
                   Resume from {formatTime(saved)}

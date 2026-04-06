@@ -23,9 +23,9 @@ export default function Home() {
       <main>
         <Hero />
 
-        <div className="relative px-4 md:px-8 py-16">
+        <div className="relative px-4 md:px-8 py-10">
           {/* Audio options below hero */}
-          <div className="prose-column mb-16">
+          <div className="prose-column mb-10">
             <AudioInline />
           </div>
 
