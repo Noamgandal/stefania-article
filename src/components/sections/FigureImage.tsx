@@ -296,10 +296,16 @@ export function FigureImage({
   return (
     <>
       <figure className={cn('my-8', layoutClasses[layout])}>
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           className="relative cursor-zoom-in overflow-hidden rounded-lg w-full text-left group"
-          onClick={() => !imgError && setLightboxOpen(true)}
+          onClick={() => {
+            if (!imgError) setLightboxOpen(true);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !imgError) setLightboxOpen(true);
+          }}
           aria-label={`View Figure ${figureNumber} in full screen`}
         >
           {imgError ? (
@@ -320,7 +326,7 @@ export function FigureImage({
                 onError={() => setImgError(true)}
               />
               {/* Zoom icon overlay */}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 active:bg-black/30 transition-colors rounded-lg">
+              <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-colors rounded-lg pointer-events-none">
                 <div className="w-10 h-10 rounded-full bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 active:opacity-100 transition-opacity shadow-md">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="11" cy="11" r="8" />
@@ -332,7 +338,7 @@ export function FigureImage({
               </div>
             </>
           )}
-        </button>
+        </div>
         <figcaption className="mt-2.5 text-sm leading-relaxed text-parchment-600">
           <span className="font-semibold text-secondary-600">Figure {figureNumber}:</span>{' '}
           <span dangerouslySetInnerHTML={{ __html: caption }} />
