@@ -67,7 +67,7 @@ export function TableOfContents({ sections }: TableOfContentsProps) {
       {/* Mobile toggle button */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="xl:hidden fixed bottom-20 right-4 z-30 bg-primary-700 text-white text-xs font-medium px-3 py-2 rounded-full shadow-lg hover:bg-primary-700/90 transition-colors"
+        className="xl:hidden fixed bottom-28 right-4 z-30 bg-primary-700 text-white text-xs font-medium px-3 py-2 rounded-full shadow-lg hover:bg-primary-700/90 transition-colors"
         aria-label="Open table of contents"
       >
         Contents

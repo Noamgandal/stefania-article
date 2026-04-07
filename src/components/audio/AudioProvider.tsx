@@ -26,6 +26,7 @@ interface AudioContextType {
   playbackRate: number;
   play: (trackId: string) => void;
   pause: () => void;
+  close: () => void;
   toggle: (trackId: string) => void;
   seek: (time: number) => void;
   setPlaybackRate: (rate: number) => void;
@@ -179,6 +180,20 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }
   }, [activeTrack]);
 
+  const close = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (activeTrack) {
+      localStorage.setItem(getStorageKey(activeTrack.id), String(audio.currentTime));
+    }
+    audio.pause();
+    audio.src = '';
+    setActiveTrack(null);
+    setCurrentTime(0);
+    setDuration(0);
+    setIsPlaying(false);
+  }, [activeTrack]);
+
   const toggle = useCallback(
     (trackId: string) => {
       if (activeTrack?.id === trackId && isPlaying) {
@@ -220,6 +235,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         playbackRate,
         play,
         pause,
+        close,
         toggle,
         seek,
         setPlaybackRate,

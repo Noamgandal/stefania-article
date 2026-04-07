@@ -143,6 +143,7 @@ export function StickyPlayer() {
     duration,
     playbackRate,
     pause,
+    close,
     play,
     toggle,
     seek,
@@ -268,7 +269,7 @@ export function StickyPlayer() {
 
           {/* Close */}
           <button
-            onClick={pause}
+            onClick={close}
             className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full hover:bg-parchment-100/10 active:bg-parchment-100/20 transition-colors ml-1"
             aria-label="Stop and close player"
           >
