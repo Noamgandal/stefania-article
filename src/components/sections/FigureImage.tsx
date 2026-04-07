@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
@@ -17,6 +17,271 @@ const layoutClasses = {
   outset: 'max-w-[56rem] mx-auto',
   full: 'w-full',
 } as const;
+
+/* ── Zoomable Lightbox ── */
+
+function Lightbox({
+  src,
+  alt,
+  caption,
+  figureNumber,
+  onClose,
+}: {
+  src: string;
+  alt: string;
+  caption: string;
+  figureNumber: number;
+  onClose: () => void;
+}) {
+  const [scale, setScale] = useState(1);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const lastPan = useRef({ x: 0, y: 0 });
+  const lastPinchDist = useRef(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const resetZoom = useCallback(() => {
+    setScale(1);
+    setTranslate({ x: 0, y: 0 });
+  }, []);
+
+  // Double-tap to zoom in/out
+  const handleDoubleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (scale > 1) {
+        resetZoom();
+      } else {
+        // Zoom to 2.5x centered on click point
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (rect) {
+          const cx = e.clientX - rect.left - rect.width / 2;
+          const cy = e.clientY - rect.top - rect.height / 2;
+          setScale(2.5);
+          setTranslate({ x: -cx * 1.5, y: -cy * 1.5 });
+        } else {
+          setScale(2.5);
+        }
+      }
+    },
+    [scale, resetZoom]
+  );
+
+  // Mouse wheel zoom
+  const handleWheel = useCallback(
+    (e: React.WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 0.85 : 1.18;
+      setScale((prev) => {
+        const next = Math.max(0.5, Math.min(6, prev * delta));
+        if (next <= 1) {
+          setTranslate({ x: 0, y: 0 });
+        }
+        return next;
+      });
+    },
+    []
+  );
+
+  // Mouse pan when zoomed
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (scale <= 1) return;
+      e.preventDefault();
+      setIsPanning(true);
+      lastPan.current = { x: e.clientX, y: e.clientY };
+    },
+    [scale]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (!isPanning) return;
+      const dx = e.clientX - lastPan.current.x;
+      const dy = e.clientY - lastPan.current.y;
+      lastPan.current = { x: e.clientX, y: e.clientY };
+      setTranslate((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+    },
+    [isPanning]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setIsPanning(false);
+  }, []);
+
+  // Touch: pinch-to-zoom + pan
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (e.touches.length === 2) {
+        // Pinch start
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        lastPinchDist.current = Math.sqrt(dx * dx + dy * dy);
+      } else if (e.touches.length === 1 && scale > 1) {
+        // Pan start
+        setIsPanning(true);
+        lastPan.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    },
+    [scale]
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      e.preventDefault();
+      if (e.touches.length === 2) {
+        // Pinch zoom
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (lastPinchDist.current > 0) {
+          const ratio = dist / lastPinchDist.current;
+          setScale((prev) => Math.max(0.5, Math.min(6, prev * ratio)));
+        }
+        lastPinchDist.current = dist;
+      } else if (e.touches.length === 1 && isPanning) {
+        // Pan
+        const dx = e.touches[0].clientX - lastPan.current.x;
+        const dy = e.touches[0].clientY - lastPan.current.y;
+        lastPan.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        setTranslate((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+      }
+    },
+    [isPanning]
+  );
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (e.touches.length < 2) {
+        lastPinchDist.current = 0;
+      }
+      if (e.touches.length === 0) {
+        setIsPanning(false);
+        if (scale <= 0.8) {
+          onClose();
+        } else if (scale < 1) {
+          resetZoom();
+        }
+      }
+    },
+    [scale, onClose, resetZoom]
+  );
+
+  // Escape to close
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
+  // Prevent body scroll when lightbox is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  const isZoomed = scale > 1;
+
+  return (
+    <div
+      className="fixed inset-0 z-[70] flex flex-col bg-black/90"
+      onClick={isZoomed ? undefined : onClose}
+      role="dialog"
+      aria-label={`Figure ${figureNumber}: ${alt}`}
+    >
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-4 py-3 text-white/80 shrink-0">
+        <span className="text-sm font-medium">
+          Figure {figureNumber}
+        </span>
+        <div className="flex items-center gap-3">
+          {/* Zoom indicator */}
+          {isZoomed && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                resetZoom();
+              }}
+              className="text-xs bg-white/10 px-2 py-1 rounded-full hover:bg-white/20 transition-colors"
+            >
+              {Math.round(scale * 100)}% — Reset
+            </button>
+          )}
+          {/* Close */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+            aria-label="Close"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round">
+              <line x1="4" y1="4" x2="16" y2="16" />
+              <line x1="16" y1="4" x2="4" y2="16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Image area */}
+      <div
+        ref={containerRef}
+        className={cn(
+          'flex-1 flex items-center justify-center overflow-hidden select-none',
+          isZoomed ? 'cursor-grab' : 'cursor-zoom-in',
+          isPanning && 'cursor-grabbing'
+        )}
+        onDoubleClick={handleDoubleClick}
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div
+          className="transition-transform duration-150 ease-out"
+          style={{
+            transform: `translate(${translate.x}px, ${translate.y}px) scale(${scale})`,
+            transition: isPanning ? 'none' : undefined,
+          }}
+        >
+          <Image
+            src={src}
+            alt={alt}
+            width={1800}
+            height={1125}
+            className="max-h-[80vh] max-w-[95vw] w-auto h-auto object-contain rounded select-none pointer-events-none"
+            draggable={false}
+            priority
+          />
+        </div>
+      </div>
+
+      {/* Caption bar */}
+      <div className="shrink-0 px-4 py-3 text-center">
+        <p className="text-white/60 text-xs leading-relaxed max-w-2xl mx-auto">
+          <span className="text-white/80 font-medium">Figure {figureNumber}:</span>{' '}
+          <span dangerouslySetInnerHTML={{ __html: caption }} />
+        </p>
+        {!isZoomed && (
+          <p className="text-white/30 text-[10px] mt-1.5">
+            Double-tap or scroll to zoom &middot; Pinch on mobile
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── Main Component ── */
 
 export function FigureImage({
   src,
@@ -59,33 +324,14 @@ export function FigureImage({
         </figcaption>
       </figure>
 
-      {/* Lightbox */}
       {lightboxOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 cursor-zoom-out"
-          onClick={() => setLightboxOpen(false)}
-          role="dialog"
-          aria-label={`Enlarged view of Figure ${figureNumber}`}
-        >
-          <button
-            onClick={() => setLightboxOpen(false)}
-            className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
-            aria-label="Close lightbox"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none">
-              <line x1="4" y1="4" x2="20" y2="20" />
-              <line x1="20" y1="4" x2="4" y2="20" />
-            </svg>
-          </button>
-          <Image
-            src={src}
-            alt={alt}
-            width={1800}
-            height={1125}
-            className="max-h-[90vh] max-w-[90vw] w-auto h-auto object-contain rounded"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
+        <Lightbox
+          src={src}
+          alt={alt}
+          caption={caption}
+          figureNumber={figureNumber}
+          onClose={() => setLightboxOpen(false)}
+        />
       )}
     </>
   );
