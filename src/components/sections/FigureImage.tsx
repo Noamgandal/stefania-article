@@ -55,7 +55,7 @@ export function FigureImage({
         </div>
         <figcaption className="mt-2.5 text-sm leading-relaxed text-parchment-600">
           <span className="font-semibold text-secondary-600">Figure {figureNumber}:</span>{' '}
-          {caption}
+          <span dangerouslySetInnerHTML={{ __html: caption }} />
         </figcaption>
       </figure>
 

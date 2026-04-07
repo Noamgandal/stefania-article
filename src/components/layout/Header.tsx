@@ -38,7 +38,7 @@ export function Header() {
             pastHero ? 'opacity-100' : 'opacity-0'
           )}
         >
-          Weaponizing Obese Sinners in Medieval Hell
+          Obesity and the Politics of Taddeo di Bartolo&rsquo;s Inferno
         </span>
       </div>
     </header>

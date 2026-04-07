@@ -57,7 +57,7 @@ export function TableOfContents({ sections }: TableOfContentsProps) {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden xl:block sticky top-20 self-start w-56 shrink-0">
+      <aside className="toc-sidebar sticky top-20 self-start w-56 shrink-0">
         <p className="text-xs font-medium uppercase tracking-widest text-foreground/30 mb-4 px-3">
           Contents
         </p>

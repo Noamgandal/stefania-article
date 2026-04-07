@@ -11,8 +11,8 @@ interface ScrollRevealProps {
 
 export function ScrollReveal({ children, className, delay }: ScrollRevealProps) {
   const [ref, isInView] = useInView({
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px',
+    threshold: 0.1,
+    rootMargin: '0px 0px -30px 0px',
     once: true,
   });
 
@@ -20,8 +20,7 @@ export function ScrollReveal({ children, className, delay }: ScrollRevealProps) 
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
       className={cn(
-        'opacity-0 transition-opacity duration-300',
-        isInView && 'animate-fade-in-up',
+        isInView ? 'animate-fade-in-up' : 'opacity-0',
         delay && `stagger-${delay}`,
         className
       )}
