@@ -34,20 +34,22 @@ function PauseIcon({ size = 18 }: { size?: number }) {
 
 function SkipBackIcon() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18" />
-      <path d="M12 3 8 7l4 4" />
-      <text x="12" y="15.5" fill="currentColor" stroke="none" fontSize="7" fontWeight="700" textAnchor="middle" fontFamily="system-ui">15</text>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M11.5 4.5V2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M11.5 4.5C16.47 4.5 20.5 8.53 20.5 13.5S16.47 22.5 11.5 22.5 2.5 18.47 2.5 13.5 6.53 4.5 11.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M13.5 2L11.5 4.5 13.5 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <text x="11.5" y="16.5" fill="currentColor" fontSize="8.5" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">15</text>
     </svg>
   );
 }
 
 function SkipForwardIcon() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18" />
-      <path d="M12 3l4 4-4 4" />
-      <text x="12" y="15.5" fill="currentColor" stroke="none" fontSize="7" fontWeight="700" textAnchor="middle" fontFamily="system-ui">15</text>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M12.5 4.5V2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M12.5 4.5C7.53 4.5 3.5 8.53 3.5 13.5S7.53 22.5 12.5 22.5 21.5 18.47 21.5 13.5 17.47 4.5 12.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M10.5 2L12.5 4.5 10.5 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <text x="12.5" y="16.5" fill="currentColor" fontSize="8.5" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">15</text>
     </svg>
   );
 }
