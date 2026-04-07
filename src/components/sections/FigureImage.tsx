@@ -296,9 +296,11 @@ export function FigureImage({
   return (
     <>
       <figure className={cn('my-8', layoutClasses[layout])}>
-        <div
-          className="relative cursor-zoom-in overflow-hidden rounded-lg"
+        <button
+          type="button"
+          className="relative cursor-zoom-in overflow-hidden rounded-lg w-full text-left group"
           onClick={() => !imgError && setLightboxOpen(true)}
+          aria-label={`View Figure ${figureNumber} in full screen`}
         >
           {imgError ? (
             <div className="flex items-center justify-center bg-parchment-100 border border-parchment-200 rounded-lg aspect-[16/10] text-parchment-400">
@@ -308,16 +310,29 @@ export function FigureImage({
               </div>
             </div>
           ) : (
-            <Image
-              src={src}
-              alt={alt}
-              width={1200}
-              height={750}
-              className="w-full h-auto rounded-lg"
-              onError={() => setImgError(true)}
-            />
+            <>
+              <Image
+                src={src}
+                alt={alt}
+                width={1200}
+                height={750}
+                className="w-full h-auto rounded-lg"
+                onError={() => setImgError(true)}
+              />
+              {/* Zoom icon overlay */}
+              <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 active:bg-black/30 transition-colors rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 active:opacity-100 transition-opacity shadow-md">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    <line x1="11" y1="8" x2="11" y2="14" />
+                    <line x1="8" y1="11" x2="14" y2="11" />
+                  </svg>
+                </div>
+              </div>
+            </>
           )}
-        </div>
+        </button>
         <figcaption className="mt-2.5 text-sm leading-relaxed text-parchment-600">
           <span className="font-semibold text-secondary-600">Figure {figureNumber}:</span>{' '}
           <span dangerouslySetInnerHTML={{ __html: caption }} />
